@@ -1,6 +1,6 @@
 import express from "express";
 import projectsRouter from "./projects.js";
-// new commit
+// new commit changed git config to my umass email
 const app = express();
 const PORT = process.env.PORT || 3000;
 app.use("/", projectsRouter);
