@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <%- include('partials/header.ejs') %>
+    <link rel="stylesheet" href="/style.css">
+  </head>
+  <body>
+    <ul>
+      <% entries.forEach(entry => { %>
+        <li><%= entry.title %></li>
+      <% }); %>
+    </ul>
+  </body>
+</html>

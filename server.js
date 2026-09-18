@@ -1,12 +1,32 @@
 import express from "express";
-import projectsRouter from "./projects.js";
 // new commit changed git config to my umass email
 const app = express();
 const PORT = process.env.PORT || 3000;
-app.use("/", projectsRouter);
+
+app.use(express.static("public"));
+
+const entries = [
+  { title: "first note", body: "Juan" },
+  { title: "second note", body: "Hormaechea" },
+  { title: "third note", body: "Casanueva" },
+];
+
+const events = [
+  { title: "Career fair", date: String(new Date(1995, 8, 13)) },
+  { title: "Hackathon kickoff", date: String(new Date(2018, 3, 14)) },
+  { title: "non date event" },
+];
+/* const events = []; */
+
+app.set("view engine", "ejs");
+app.set("views", "views");
 
 app.get("/", (req, res) => {
   res.send("Hello, web!");
+});
+
+app.get("/about", (req, res) => {
+  res.render("about", { title: "about" });
 });
 
 app.get("/contact", (req, res) => {
@@ -23,10 +43,6 @@ app.get("/about-me", (req, res) => {
 
 app.get("/status", (req, res) => {
   res.json({ status: "ok", uptime: process.uptime() });
-});
-
-app.listen(PORT, () => {
-  console.log(`Listening on http://localhost:${PORT}`);
 });
 
 app.get("/hello/:name", (req, res) => {
@@ -50,4 +66,30 @@ app.get("/api/info", (req, res) => {
 
 app.get("/api/error", (req, res) => {
   res.status(404).send("bad request");
+});
+
+app.get("/entries", (req, res) => {
+  res.render("entries", {
+    title: "My notes",
+    entries: entries,
+  });
+});
+
+app.get("/entries/:id", (req, res) => {
+  const id = req.params.id;
+  if (id >= entries.length || id < 0) {
+    return res.status(404).send("index out of bounds");
+  }
+
+  const entry = [entries[id]];
+
+  res.render("entries", { title: "My notes", entries: entry });
+});
+
+app.get("/events", (req, res) => {
+  res.render("events", { events });
+});
+
+app.listen(PORT, () => {
+  console.log(`Listening on http://localhost:${PORT}`);
 });
