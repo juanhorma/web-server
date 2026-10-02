@@ -1,10 +1,12 @@
 import express from "express";
+import { readFile, writeFile } from "fs/promises";
 // new commit changed git config to my umass email
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.static("public"));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.disable("x-powered-by");
 
 const entries = [
@@ -71,25 +73,23 @@ app.get("/api/error", (req, res) => {
   res.status(404).send("bad request");
 });
 
-app.get("/entries", (req, res) => {
-  res.set("Total-Count", `${entries.length}`);
-  res.set("Cache-Control", "public, max-age=60");
-  /* res.status(200).render("entries", {
-    title: "My notes",
-    entries: entries,
-  }); */
-
-  res.status(200).json(entries);
+app.get("/entries", async (req, res) => {
+  const data = await readFile("entries.json", "utf-8");
+  const my_entries = JSON.parse(data);
+  res.set("Total-Count", my_entries.length);
+  res.status(200).render("entries", { entries: my_entries });
 });
 
-app.get("/entries/:id", (req, res) => {
+app.get("/entries/:id", async (req, res) => {
   const id = req.params.id;
-  if (id > entries.at(-1).id || id < 0) {
+  const data = await readFile("entries.json", "utf-8");
+  const my_entries = JSON.parse(data);
+  if (id > my_entries.at(-1).id || id < 0) {
     return res.status(404).send("index out of bounds");
   }
 
   let my_entry = null;
-  for (const entry of entries) {
+  for (const entry of my_entries) {
     if (entry.id == id) {
       my_entry = entry;
       break;
@@ -110,31 +110,54 @@ app.get("/events", (req, res) => {
   res.status(200).render("events", { events });
 });
 
-app.post("/entries", (req, res) => {
+app.post("/entries", async (req, res) => {
   const { title, body } = req.body;
   if (!title || !body) {
     res.status(400).json({ error: "title and body are required" });
     return;
   }
-  const new_entry = { title, body };
-  entries.push(new_entry);
+  const data = await readFile("entries.json", "utf-8");
+  const my_entries = JSON.parse(data);
+  const new_id = my_entries.at(-1).id + 1;
+  const new_entry = { id: new_id, title, body };
+  my_entries.push(new_entry);
+  await writeFile("entries.json", JSON.stringify(my_entries), "utf8");
+  // res.status(201).json(new_entry);
   res.status(201).json(new_entry);
 });
 
-app.delete("/entries/:id", (req, res) => {
+app.post("/entries/classic", async (req, res) => {
+  const { title, body } = req.body;
+  if (!title || !body) {
+    res.status(400).send("title and body are required");
+    return;
+  }
+
+  const data = await readFile("entries.json", "utf-8");
+  const entries = JSON.parse(data);
+  const new_id = entries.at(-1).id + 1;
+  entries.push({ id: new_id, title, body });
+  await writeFile("entries.json", JSON.stringify(entries, null, 2));
+
+  res.redirect("/entries");
+});
+
+app.delete("/entries/:id", async (req, res) => {
   const id = Number.parseInt(req.params.id);
+  const data = await readFile("entries.json", "utf-8");
+  const my_entries = JSON.parse(data);
   if (
     Number.isNaN(id) ||
     id < 0 ||
-    entries.length == 0 ||
-    id > entries.at(-1).id
+    my_entries.length == 0 ||
+    id > my_entries.at(-1).id
   ) {
-    res.set("Total-Count", entries.length);
+    res.set("Total-Count", my_entries.length);
     res.status(404).send("Not found");
     return;
   }
   let my_entry = null;
-  for (const entry of entries) {
+  for (const entry of my_entries) {
     if (entry.id == id) {
       my_entry = entry;
       break;
@@ -146,9 +169,11 @@ app.delete("/entries/:id", (req, res) => {
     return;
   }
 
-  entries.splice(entries.indexOf(my_entry), 1);
-  res.set("Total-Count", entries.length);
-  res.status(202).json(entries);
+  my_entries.splice(my_entries.indexOf(my_entry), 1);
+  await writeFile("entries.json", JSON.stringify(my_entries), "utf8");
+  res.set("Total-Count", my_entries.length);
+
+  res.status(202).json(my_entries);
 });
 
 app.get("/wishlist", (req, res) => {
@@ -171,6 +196,22 @@ app.post("/wishlist", (req, res) => {
 
   wishlist.push(newItem);
   res.status(201).json(newItem);
+});
+
+app.get("/three-posts", async (req, res) => {
+  const ids = [1, 2, 3];
+  const data = await Promise.all(
+    ids.map(async (id) => {
+      const response = await fetch(
+        `https://jsonplaceholder.typicode.com/posts/${id}`,
+      );
+
+      return response.json();
+    }),
+  );
+
+  const titles = data.map((payload) => payload.title);
+  res.status(200).json({ titles });
 });
 
 app.listen(PORT, () => {

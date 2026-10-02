@@ -1,28 +1,24 @@
-* {
-  box-sizing: border-box;
-}
-
 :root {
   --color-bg: #fff;
   --color-text: #222;
 }
 
-body:has(.theme-toggle:checked) {
-  --color-bg: #1a1b26;
-  --color-text: #e4e7ef;
+* {
+  box-sizing: border-box;
 }
 
 body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
   font-family: sans-serif;
   max-width: 800px;
   margin: 0 auto;
   padding: 1rem;
-  background-color: var(--color-bg);
-  color: var(--color-text);
 }
 
-nav a {
-  margin-right: 1rem;
+body:has(.theme-toggle:checked) {
+  --color-bg: #1a1b26;
+  --color-text: #e4e7ef;
 }
 
 .site-header {
@@ -34,17 +30,91 @@ nav a {
   margin-bottom: 1rem;
 }
 
+nav a {
+  margin-right: 1rem;
+}
+
+#entry-form {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+#entry-form input {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+#entry-form button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  background-color: #0b6e99;
+  color: white;
+  cursor: pointer;
+}
+
 ul {
   display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
+  flex-direction: column;
+  gap: 0.75rem;
   list-style: none;
   padding: 0;
 }
 
 li {
-  flex: 1 1 200px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 0.75rem;
   border: 1px solid #ddd;
   border-radius: 4px;
+}
+
+.delete-btn {
+  padding: 0.35rem 0.75rem;
+  border: 1px solid #d33;
+  border-radius: 4px;
+  background-color: white;
+  color: #d33;
+  cursor: pointer;
+}
+
+.delete-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.classic-form {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 2px dashed #ccc;
+}
+
+.classic-form h2 {
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+}
+
+.classic-form form {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.classic-form input {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.classic-form button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  background-color: #444;
+  color: white;
+  cursor: pointer;
 }
