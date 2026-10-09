@@ -15,9 +15,10 @@
     <ul id="entries">
       <% entries.forEach(entry => { %>
         <% const id = entry.id%>
-        <li data-id="<%= id %>">
-          <span><strong><%= entry.title %>:</strong> <%= entry.body %></span>
-          <button class="delete-btn" type="button">Delete</button>
+        <li data-id="<%= id %>" data-title="<%= entry.title %>" data-body="<%= entry.body %>">
+            <span class="entry-display"><strong><%= entry.title %>:</strong> <%=entry.body %></span>
+            <button class="edit-btn" type="button">Edit</button>
+            <button class="delete-btn" type="button">Delete</button>
         </li>
       <% }); %>
     </ul>
