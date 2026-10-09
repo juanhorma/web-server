@@ -4,7 +4,7 @@ import morgan from "morgan";
 // new commit changed git config to my umass email
 const app = express();
 const PORT = process.env.PORT || 3000;
-
+// work in progress
 app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
