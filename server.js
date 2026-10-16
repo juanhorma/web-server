@@ -1,18 +1,21 @@
 import express from "express";
 import entriesRouter from "./routes/entries.js";
 import morgan from "morgan";
-// new commit changed git config to my umass email
+import mongoose from "mongoose";
+
+// setup
+await mongoose.connect(
+  process.env.MONGODB_URI ||
+    "mongodb://dev:devpassword@mongo:27017/devdb?authSource=admin",
+);
 const app = express();
 const PORT = process.env.PORT || 3000;
-// work in progress
+
+// middleware
 app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
-app.use((err, req, res, next) => {
-  console.error(err);
-  res.status(500).send("Something went wrong.");
-});
 app.use((req, res, next) => {
   res.set("App-Version", 1.0);
   next();
@@ -28,9 +31,11 @@ const events = [
 
 const wishlist = [];
 
+// view template
 app.set("view engine", "ejs");
 app.set("views", "views");
 
+// routes
 app.get("/", (req, res) => {
   res.status(200).send("Hello, web!");
 });
@@ -122,6 +127,11 @@ app.get("/three-posts", async (req, res) => {
 
 app.use((req, res) => {
   res.status(404).send("Page not found.");
+});
+
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).send("Something went wrong.");
 });
 
 app.listen(PORT, () => {

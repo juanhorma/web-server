@@ -1,1 +1,17 @@
-[{"id":1,"title":"one","body":"two"},{"id":2,"title":"three","body":"four"},{"id":3,"title":"juan","body":"hormaechea"}]
+[
+  {
+    "id": 0,
+    "title": "first note",
+    "body": "Juan"
+  },
+  {
+    "id": 1,
+    "title": "second note",
+    "body": "Hormaechea"
+  },
+  {
+    "id": 2,
+    "title": "third note",
+    "body": "Casanueva"
+  }
+]

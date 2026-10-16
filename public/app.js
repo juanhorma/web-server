@@ -97,7 +97,9 @@ const startEdit = (item) => {
     "";
   const currentBody =
     item.dataset.body ??
-    display.textContent.replace(display.querySelector("strong")?.textContent ?? "", "").trim();
+    display.textContent
+      .replace(display.querySelector("strong")?.textContent ?? "", "")
+      .trim();
 
   const editForm = document.createElement("form");
   const save = document.createElement("button");
@@ -137,7 +139,7 @@ const startEdit = (item) => {
       }
 
       const saved = await response.json();
-      item.dataset.id = saved.id;
+      item.dataset.id = saved.id ?? item.dataset.id;
       item.dataset.title = saved.title;
       item.dataset.body = saved.body;
       fillDisplay(display, saved);
@@ -164,7 +166,10 @@ list.addEventListener("click", async (event) => {
   const button = event.target;
   const item = button.closest("li");
   const id = item.dataset.id;
-
+  if (!id || id === "undefined" || id === "null") {
+    alert("Cannot delete entry: missing or invalid entry ID.");
+    return;
+  }
   button.disabled = true;
   try {
     const response = await fetch(`/entries/${id}`, { method: "DELETE" });
