@@ -142,3 +142,5 @@ app.listen(PORT, () => {
 // step three
 // checkpoint 1
 // checkpoint 2
+// checkpoint 3
+// BUG: off-by-one introduced here
