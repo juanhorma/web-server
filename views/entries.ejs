@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="/style.css">
+    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
   </head>
   <body>
     <%- include('partials/header.ejs') %>
@@ -19,7 +20,18 @@
             <span class="entry-display"><strong><%= entry.title %>:</strong> <%=entry.body %></span>
             <button class="favorite-btn" type="button">★</button>
             <button class="edit-btn" type="button">Edit</button>
-            <button class="delete-btn" type="button">Delete</button>
+            <button
+              class="delete-btn"
+              hx-delete="/entries/<%=id%>"
+              hx-request='{"timeout": 2000}'
+              hx-target="closest li"
+              hx-swap="outerHTML"
+              hx-disabled-elt="this"
+              hx-indicator="#deletion"
+            >
+            Delete
+            </button>
+            <span id="indicator" class="htmx-indicator">Deleting...</span>
         </li>
       <% }); %>
     </ul>

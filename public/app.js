@@ -5,6 +5,8 @@ const showError = (message) => {
   formError.textContent = message;
 };
 
+htmx.config.timeout = 5000;
+
 const fillDisplay = (display, entry) => {
   const title = document.createElement("strong");
   title.textContent = `${entry.title}:`;
@@ -37,6 +39,11 @@ const buildItem = (entry) => {
   deleteButton.className = "delete-btn";
   deleteButton.type = "button";
   deleteButton.textContent = "Delete";
+  deleteButton.setAttribute("hx-delete", `/entries/${entry.id}`);
+  deleteButton.setAttribute("hx-request", '{"timeout": 2000}');
+  deleteButton.setAttribute("hx-target", "closest li");
+  deleteButton.setAttribute("hx-swap", "outerHTML");
+  deleteButton.setAttribute("hx-disabled-elt", "this");
 
   item.append(text, editButton, deleteButton);
   return item;
@@ -61,7 +68,7 @@ form.addEventListener("submit", async (event) => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(entry),
-      signal: AbortSignal.timeout(2000),
+      signal: AbortSignal.timeout(5000),
     });
   } catch (error) {
     showError(
@@ -80,8 +87,10 @@ form.addEventListener("submit", async (event) => {
 
   showError("");
   const saved = await response.json();
+  const new_item = buildItem(saved);
 
-  list.append(buildItem(saved));
+  list.append(new_item);
+  htmx.process(new_item);
 
   form.reset();
 });
@@ -158,29 +167,21 @@ const startEdit = (item) => {
 list.addEventListener("click", async (event) => {
   if (event.target.matches(".edit-btn")) {
     startEdit(event.target.closest("li"));
-    return;
   }
+});
 
-  if (!event.target.matches(".delete-btn")) return;
+list.addEventListener("htmx:responseError", (event) => {
+  alert(
+    `That entry was not deleted. The server answered ${event.detail.xhr.status}.`,
+  );
+});
 
-  const button = event.target;
-  const item = button.closest("li");
-  const id = item.dataset.id;
-  if (!id || id === "undefined" || id === "null") {
-    alert("Cannot delete entry: missing or invalid entry ID.");
-    return;
-  }
-  button.disabled = true;
-  try {
-    const response = await fetch(`/entries/${id}`, { method: "DELETE" });
-    if (!response.ok) {
-      const { error } = await response.json();
-      alert(error);
-      button.disabled = false;
-      return;
-    }
-    item.remove();
-  } catch {
-    button.disabled = false;
-  }
+list.addEventListener("htmx:sendError", () => {
+  alert("That entry was not deleted. Could not reach the server.");
+});
+
+list.addEventListener("htmx:timeout", () => {
+  alert(
+    "That entry was not deleted. The server did not answer within five seconds.",
+  );
 });

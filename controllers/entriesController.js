@@ -1,6 +1,8 @@
 import * as entriesService from "../services/entriesService.js";
 import { isValidId } from "../repositories/entriesRepository.js";
 
+// const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 export const index = async (req, res) => {
   const entries = await entriesService.listEntries();
   res.set("Total-Count", entries.length);
@@ -44,7 +46,9 @@ export const remove = async (req, res) => {
     res.status(404).json({ error: updatedEntries.error });
     return;
   }
-  res.status(202).json(updatedEntries.value);
+  // await delay(1000);
+
+  res.status(200).send("");
 };
 
 export const patch = async (req, res) => {

@@ -54,7 +54,7 @@ export const updateEntry = async (id, data) => {
 
 export const deleteEntry = async (id) => {
   const existing = await findById(id);
-  if (!existing) return Err("entry not found");
+  if (!existing) return Err({ status: 404, message: "Entry not found" });
   await removeById(id);
   return Ok(null);
 };
