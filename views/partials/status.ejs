@@ -1,0 +1,7 @@
+<p
+  id="status"
+  class="min-h-6 mb-4 text-red-700"
+  role="status"
+  aria-live="polite"
+  <% if (locals.oob) { %>hx-swap-oob="innerHTML"<% } %>
+><%= locals.message || '' %></p>

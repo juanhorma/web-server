@@ -1,0 +1,30 @@
+<li id="entry-<%= entry.id %>">
+  <span class="entry-display"><strong><%= entry.title %>:</strong> <%= entry.body %></span>
+  <button
+    id="favorite-<%= entry.id %>"
+    class="favorite-btn"
+    aria-label="<%= entry.favorite ? 'Remove from favorites' : 'Add to favorites' %>"
+    type="button"
+    hx-patch="/entries/<%= entry.id %>/favorite"
+    hx-target="closest li"
+    hx-swap="outerHTML"
+    hx-disabled-elt="this"
+  ><%= entry.favorite ? '★' : '☆' %></button>
+  <button
+    class="edit-btn hover:bg-teal-800"
+    type="button"
+    hx-get="/entries/<%= entry.id %>/edit"
+    hx-target="closest li"
+    hx-swap="outerHTML"
+  >Edit</button>
+  <button
+    class="delete-btn hover:bg-teal-800"
+    hx-delete="/entries/<%= entry.id %>"
+    hx-target="closest li"
+    hx-swap="outerHTML"
+    hx-confirm="Delete this entry?"
+    hx-disabled-elt="this"
+    hx-indicator="next .delete-indicator"
+  >Delete</button>
+  <span class="delete-indicator htmx-indicator text-sm text-gray-500">Deleting...</span>
+</li>

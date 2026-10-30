@@ -1,0 +1,23 @@
+<li id="entry-<%= entry.id %>">
+  <form
+    class="flex flex-col gap-2 mb-6 sm:flex-row"
+    hx-put="/entries/<%= entry.id %>"
+    hx-target="closest li"
+    hx-swap="outerHTML"
+    hx-disabled-elt="find button[type='submit']"
+  >
+    <label for="edit-title-<%= entry.id %>" class="sr-only">Title</label>
+    <input class="form-input" id="edit-title-<%= entry.id %>" type="text" name="title" value="<%= entry.title %>" autofocus>
+    <label for="edit-body-<%= entry.id %>" class="sr-only">Body</label>
+    <input class="form-input" id="edit-body-<%= entry.id %>" type="text" name="body" value="<%= entry.body %>">
+    <button class="bg-teal-700 text-white rounded px-4 py-2"
+    type="submit">Save</button>
+    <button
+      class="bg-teal-700 text-white rounded px-4 py-2"
+      type="button"
+      hx-get="/entries/<%= entry.id %>"
+      hx-target="closest li"
+      hx-swap="outerHTML"
+    >Cancel</button>
+  </form>
+</li>

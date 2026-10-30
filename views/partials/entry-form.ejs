@@ -1,0 +1,15 @@
+<form
+  id="entry-form"
+  class="flex flex-col gap-2 mb-6 sm:flex-row"
+  hx-post="/entries"
+  hx-target="#entries"
+  hx-swap="beforeend"
+  hx-disabled-elt="find button"
+  <% if (locals.oob) { %>hx-swap-oob="true"<% } %>
+>
+  <label for="entry-title" class="sr-only">Title</label>
+  <input type="text" name="title" placeholder="Title" class="flex-1 border border-gray-300 rounded p-2">
+  <label for="entry-body" class="sr-only">Body</label>
+  <input type="text" name="body" placeholder="Body" class="flex-1 border border-gray-300 rounded p-2">
+  <button type="submit" class="hover:bg-teal-800 bg-teal-700 text-white rounded px-4 py-2">Add entry</button>
+</form>
