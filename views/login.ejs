@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/style.css">
+  </head>
+  <body>
+    <%- include('partials/header') %>
+    <main>
+      <h2 class="text-lg font-bold mb-4">Log in</h2>
+      <%# A plain form: logging in changes the whole page, so it posts and the
+          server answers with a redirect (Post/Redirect/Get), or this page again
+          with the error. %>
+      <form method="POST" action="/login" class="flex flex-col gap-3 max-w-sm">
+        <% if (error) { %>
+          <p id="form-error" role="alert" class="text-red-700"><%= error %></p>
+        <% } %>
+        <label for="login-email" class="flex flex-col gap-1">Email
+          <input type="email" id="login-email" name="email" value="<%= email %>" autocomplete="email" required class="form-input">
+        </label>
+        <label for="login-password" class="flex flex-col gap-1">Password
+          <input type="password" id="login-password" name="password" autocomplete="current-password" required class="form-input">
+        </label>
+        <label for="login-remember" class="flex gap-2 items-center">
+          <input type="checkbox" id="login-remember" name="rememberMe"> Remember me for 30 days
+        </label>
+        <button type="submit" id="login-submit" class="bg-teal-700 text-white rounded px-4 py-2 hover:bg-teal-800">Log in</button>
+      </form>
+      <p class="mt-4">New here? <a href="/signup" class="text-teal-700 underline">Sign up</a>.</p>
+    </main>
+  </body>
+</html>

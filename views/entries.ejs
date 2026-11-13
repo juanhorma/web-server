@@ -24,7 +24,11 @@
   >
     <%- include('partials/header') %>
     <main>
-      <%- include('partials/entry-form') %>
+      <% if (locals.user) { %>
+        <%- include('partials/entry-form') %>
+      <% } else { %>
+        <p id="login-prompt" class="mb-6"><a href="/login" class="text-teal-700 underline">Log in</a> or <a href="/signup" class="text-teal-700 underline">sign up</a> to add notes.</p>
+      <% } %>
       <%- include('partials/status') %>
       <ul id="entries" tabindex="-1">
         <% entries.forEach((entry) => { %>
@@ -32,16 +36,18 @@
         <% }); %>
       </ul>
 
+      <% if (locals.user) { %>
       <section class="classic-form">
         <h2>Classic form (no JavaScript)</h2>
         <form method="POST" action="/entries/classic">
-          <label for="title" class="sr-only">Title</label>
-          <input type="text" name="title" placeholder="Title">
-          <label for="body" class="sr-only">Body</label>
-          <input type="text" name="body" placeholder="Body">
+          <label for="classic-title" class="sr-only">Title</label>
+          <input type="text" id="classic-title" name="title" placeholder="Title">
+          <label for="classic-body" class="sr-only">Body</label>
+          <input type="text" id="classic-body" name="body" placeholder="Body">
           <button type="submit">Add entry the classic way</button>
         </form>
       </section>
+      <% } %>
     </main>
   </body>
 </html>

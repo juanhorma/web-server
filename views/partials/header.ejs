@@ -1,10 +1,17 @@
 <header class="flex flex-col gap-2 border-b-2 border-gray-300 pb-2 mb-4 sm:flex-row sm:justify-between sm:items-center">
   <h1 class="text-xl font-bold">Notes</h1>
-  <nav class="flex gap-4">
+  <nav class="flex flex-wrap gap-4 items-center">
     <a href="/" class="text-teal-700">Home</a>
     <a href="/entries" class="text-teal-700">Entries</a>
+    <% if (locals.user) { %>
+      <span id="signed-in" class="text-gray-700">Signed in as <%= user.email %></span>
+      <%# Logging out changes state, so it is a POST from a form, never a link. %>
+      <form method="POST" action="/logout">
+        <button type="submit" id="logout" class="text-teal-700">Log out</button>
+      </form>
+    <% } else { %>
+      <a href="/login" id="login-link" class="text-teal-700">Log in</a>
+      <a href="/signup" id="signup-link" class="text-teal-700">Sign up</a>
+    <% } %>
   </nav>
 </header>
-
-<input type="checkbox" id="theme-toggle" class="theme-toggle" />
-<label for="theme-toggle">Dark mode</label>

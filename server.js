@@ -1,7 +1,11 @@
 import express from "express";
-import entriesRouter from "./routes/entries.js";
 import morgan from "morgan";
 import mongoose from "mongoose";
+import cookieParser from "cookie-parser";
+import entriesRouter from "./routes/entries.js";
+import authRouter from "./routes/auth.js";
+import adminRouter from "./routes/admin.js";
+import { attachUser } from "./middleware/attachUser.js";
 
 // setup
 await mongoose.connect(
@@ -10,6 +14,12 @@ await mongoose.connect(
 );
 const app = express();
 const PORT = process.env.PORT || 3000;
+const SESSION_SECRET =
+  process.env.SESSION_SECRET || "dev-secret-change-in-production";
+
+// view template
+app.set("view engine", "ejs");
+app.set("views", "views");
 
 // middleware
 app.use(express.static("public"));
@@ -20,6 +30,11 @@ app.use((req, res, next) => {
   res.set("App-Version", 1.0);
   next();
 });
+
+app.use(cookieParser(SESSION_SECRET));
+app.use(attachUser);
+app.use(authRouter);
+app.use("/admin", adminRouter);
 app.use("/entries", entriesRouter);
 app.disable("x-powered-by");
 
@@ -30,10 +45,6 @@ const events = [
 ];
 
 const wishlist = [];
-
-// view template
-app.set("view engine", "ejs");
-app.set("views", "views");
 
 // routes
 app.get("/", (req, res) => {
